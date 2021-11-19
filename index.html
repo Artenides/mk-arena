@@ -27,18 +27,20 @@
             justify-content: stretch;
         }
 
-        .jatekter {
-            flex: 1;
-            display: grid;
-            grid-template-columns: minmax(20%, auto) 1fr auto 10%;
-            grid-template-rows: 1fr 1fr 1fr 1fr;
-            grid-template-areas:
+		.jatekter {
+			flex: 1;
+			display: grid;
+			grid-template-columns: minmax(20%, auto) 1fr auto 10%;
+			grid-template-rows: 3fr 2fr 1fr 1fr 2fr 3fr;
+			grid-template-areas:
 				"ellenfelCsata  ellenfelKez    ellenfelPaklik  ellenfelTorony"
 				"ellenfelCsata  ellenfelJelen  ellenfelPaklik  ellenfelTorony"
+				"ellenfelCsata  ellenfelJelen  ellenfelMana    ellenfelTorony"
+				"jatekosCsata   jatekosJelen   jatekosMana     jatekosTorony"
 				"jatekosCsata   jatekosJelen   jatekosPaklik   jatekosTorony"
 				"jatekosCsata   jatekosKez     jatekosPaklik   jatekosTorony";
-            grid-gap: 5px;
-        }
+			grid-gap: 5px;
+		}
 
         .jatekter > div {
             padding: 15px;
@@ -73,7 +75,17 @@
         #jatekosKez {
             grid-area: jatekosKez;
         }
+		
+		#jatekosMana {
+			grid-area: jatekosMana;
+			background: rgba(128, 255, 127, 0.4);
+		}
 
+		#ellenfelMana {
+			grid-area: ellenfelMana;
+			background: rgba(128, 255, 127, 0.4);
+		}
+		
         #jatekosPaklik {
             grid-area: jatekosPaklik;
             flex-direction: column-reverse;
@@ -215,6 +227,7 @@
 	<div class="kez ellenfel" id="ellenfelKez">
 		<div class="label">Ellenfel kez</div>
 	</div>
+	<div class="mana ellenfel" id="ellenfelMana">12/34</div>
 	<div class="paklik ellenfel" id="ellenfelPaklik">
 		<div class="label">Ellenfel paklik</div>
 		<div class="kartya">5</div>
@@ -241,6 +254,7 @@
 		<div class="label">Jatekos kez</div>
 
 	</div>
+	<div class="mana jatekos" id="jatekosMana">12/34</div>
 	<div class="paklik jatekos" id="jatekosPaklik">
 		<div class="label">Jatekos paklik</div>
 		<div class="kartya" id="jovoPakli">Jövő</div>
