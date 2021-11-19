@@ -1,0 +1,207 @@
+
+
+        body, html {
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+
+            --kartya-meret-oszto: 2;
+        }
+
+        body {
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+        }
+
+		.jatekter {
+			flex: 1;
+			display: grid;
+			grid-template-columns: minmax(20%, auto) 1fr auto 10%;
+			grid-template-rows: 3fr 2fr 1fr 1fr 2fr 3fr;
+			grid-template-areas:
+				"ellenfelCsata  ellenfelKez    ellenfelPaklik  ellenfelTorony"
+				"ellenfelCsata  ellenfelJelen  ellenfelPaklik  ellenfelTorony"
+				"ellenfelCsata  ellenfelJelen  ellenfelMana    ellenfelTorony"
+				"jatekosCsata   jatekosJelen   jatekosMana     jatekosTorony"
+				"jatekosCsata   jatekosJelen   jatekosPaklik   jatekosTorony"
+				"jatekosCsata   jatekosKez     jatekosPaklik   jatekosTorony";
+			grid-gap: 5px;
+		}
+
+        .jatekter > div {
+            padding: 15px;
+            position: relative;
+        }
+
+        #ellenfelCsata {
+            grid-area: ellenfelCsata;
+	        flex-direction: column-reverse;
+        }
+
+        #ellenfelKez {
+            grid-area: ellenfelKez;
+        }
+
+        #ellenfelPaklik {
+            grid-area: ellenfelPaklik;
+        }
+
+        #ellenfelTorony {
+            grid-area: ellenfelTorony;
+        }
+
+        #ellenfelJelen {
+            grid-area: ellenfelJelen;
+        }
+
+        #jatekosCsata {
+            grid-area: jatekosCsata;
+        }
+
+        #jatekosKez {
+            grid-area: jatekosKez;
+        }
+		
+		#jatekosMana {
+			grid-area: jatekosMana;
+			background: rgba(128, 255, 127, 0.4);
+		}
+
+		#ellenfelMana {
+			grid-area: ellenfelMana;
+			background: rgba(128, 255, 127, 0.4);
+		}
+		
+        #jatekosPaklik {
+            grid-area: jatekosPaklik;
+            flex-direction: column-reverse;
+        }
+
+        #jatekosTorony {
+            grid-area: jatekosTorony;
+            flex-direction: column-reverse;
+        }
+
+        #jatekosJelen {
+            grid-area: jatekosJelen;
+        }
+
+        .csata {
+            background: rgba(255, 128, 128, 0.2);
+            align-items: center;
+            display: flex;
+            flex-flow: column nowrap;
+        }
+
+        .csata .elsoSor,
+        .csata .hatsoSor {
+            flex: 1;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+        }
+
+        .kez {
+            background: rgba(128, 128, 255, 0.4);
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+        }
+
+        .paklik {
+            background: rgba(128, 255, 127, 0.4);
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+        }
+
+        .torony {
+            background: rgba(128, 255, 127, 0.4);
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            --kartya-meret-oszto: 3;
+        }
+
+        .jelen {
+            background: rgba(255, 255, 127, 0.4);
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+        }
+
+        .torony .kartya,
+        .ellenfel.torony .kartya,
+        .kartya.piheno {
+            transform: rotate(90deg);
+            margin-top: calc(calc(calc(300px - 214px) / -2) / var(--kartya-meret-oszto));
+            margin-bottom: calc(calc(calc(300px - 214px) / -2) / var(--kartya-meret-oszto));
+            margin-left: calc(calc(calc(300px - 214px) / 2) / var(--kartya-meret-oszto));
+            margin-right: calc(calc(calc(300px - 214px) / 2) / var(--kartya-meret-oszto));
+        }
+        .kartya.serult {
+	        transform: rotate(180deg);
+        }
+
+        .ellenfel .kartya {
+            transform: rotate(180deg);
+        }
+
+        .ellenfel .kartya.serult {
+            transform: rotate(0);
+        }
+
+        .kartya {
+            background: url(../cardimages/back.png);
+            background-size: cover;
+            width: calc(214px / var(--kartya-meret-oszto));
+            height: calc(300px / var(--kartya-meret-oszto));
+            border: 1px solid #000;
+            border-radius: 3px;
+            background-color: burlywood;
+            position: relative;
+            color: #fff;
+        }
+
+        .kartya button .elforgat{
+	        position: absolute;
+	        bottom: 2px;
+	        left: 50%;
+	        transform: translateX(-50%);
+	        display:block;
+        }
+        .kartya:hover button {
+        }
+
+        .label {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+        }
+
+		.popup {
+			pointer-events: none;
+			opacity: 0;
+			position: fixed;
+			z-index: 150000;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			--kartya-meret-oszto: 0.5;
+			flex-flow: row nowrap;
+			justify-content: center;
+			align-items: center;
+			background-color: rgba(255, 255, 255, 0.2);
+			backdrop-filter: blur(2px);
+		}
+		.popup.popup-open {
+			display: flex;
+			pointer-events: initial;
+			opacity: 1;
+		}
+		.popup .kartya {
+			transition: all 0.2s;
+		}
