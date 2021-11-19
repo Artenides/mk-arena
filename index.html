@@ -193,17 +193,30 @@
             left: 2px;
         }
 
-        /*.kartya::after {*/
-        /*    position: absolute;*/
-        /*    top: 0;*/
-        /*    left: 0;*/
-        /*    width: 50px;*/
-        /*    height: 50px;*/
-        /*    content: " ";*/
-        /*    display: block;*/
-        /*    border: 25px solid transparent;*/
-        /*    border-bottom-color: white;*/
-        /*}*/
+		.popup {
+			pointer-events: none;
+			opacity: 0;
+			position: fixed;
+			z-index: 150000;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			--kartya-meret-oszto: 0.5;
+			flex-flow: row nowrap;
+			justify-content: center;
+			align-items: center;
+			background-color: rgba(255, 255, 255, 0.2);
+			backdrop-filter: blur(2px);
+		}
+		.popup.popup-open {
+			display: flex;
+			pointer-events: initial;
+			opacity: 1;
+		}
+		.popup .kartya {
+			transition: all 0.2s;
+		}
 
 	</style>
 	
@@ -271,7 +284,7 @@
 		<div class="label">Jatekos jelen</div>
 	</div>
 </div>
-
+<div class="popup" id="popup" onclick="event.target.classList.remove('popup-open')"><div class="kartya"></div></div>
 </body>
 
 </html>
@@ -290,14 +303,5 @@
 	});
 </script>
 <script>
-/*
-setTimeout(() => {
-	document.getElementById('jatekosKez').querySelector('.kartya').style.backgroundImage = 'url(jatekter.PNG)';
-	document.querySelectorAll('.jatekos .kartya').forEach(k => {
-		const b = document.createElement('button');
-		b.innerText = 'X';
-		k.appendChild(b);
-	});
-}, 20);
-*/
+//document.querySelectorAll('.kartya').forEach(div => div.addEventListener('click', (event) => document.getElementById('popup').classList.toggle('popup-open')));
 </script>

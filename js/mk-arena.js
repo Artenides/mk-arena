@@ -116,6 +116,15 @@ function addButtonEventHandlers(){
 			
         });
 
+		jQuery('body').on('click', '.megnez', function(){
+			let $card = jQuery(this).closest('div');
+			let bgImg = $card.css("background-image");
+			let $popup = jQuery('#popup');
+			$popup.find('.kartya').css("background-image", bgImg);
+			$popup.addClass("popup-open");
+			
+		});
+
     	jQuery('body').on('click', '#jovoPakli', function () {
 			drawCardFromFuture();
         });
@@ -298,12 +307,14 @@ function removeCardButtons($card){
 
 function addButtonsForCardInPresent($card){
 	removeCardButtons($card);
+	let zoomIn = jQuery('<button class="btn megnez" title="Megnéz"><i class="fas fa-search-plus"></i></button>');
 	let rotateRight = jQuery('<button class="btn elforgat" title="Elforgat"><i class="fas fa-redo"></i></button>');
 	let rotateLeft = jQuery('<button class="btn visszaforgat" title="Visszaforgat"><i class="fas fa-undo"></i></button>'); 
 	let takeBackToHand = jQuery('<button class="btn kezbevesz" title="Kézbe visszavesz"><i class="fas fa-hand-paper"></i></button>');
 	let discardToPast = jQuery('<button class="btn multbatesz" title="Múltba tesz"><i class="fas fa-skull-crossbones"></i></button>');
 	let startManeuver = jQuery('<button class="btn manoverbekezd" title="Manőverbe kezd"><i class="fas fa-compass"></i></button>');
-	  	  	
+
+	$card.append(zoomIn);	  	  	
 	$card.append(rotateRight);
 	$card.append(rotateLeft);
 	$card.append(takeBackToHand);
@@ -313,10 +324,12 @@ function addButtonsForCardInPresent($card){
 
 function addButtonsForCardInHand($card){
 	removeCardButtons($card);
+	let zoomIn = jQuery('<button class="btn megnez" title="Megnéz"><i class="fas fa-search-plus"></i></button>');
 	let moveToPresent = jQuery('<button class="btn jelenbetesz" title="Jelenbe tesz"><i class="fas fa-shield-alt"></i></button>');	
 	let discardToPast = jQuery('<button class="btn multbatesz" title="Múltba tesz"><i class="fas fa-skull-crossbones"></i></button>');
 	let showToEnemy = jQuery('<button class="btn ellenfelnekmegmutat" title="Ellenfélnek megmutat"><i class="fas fa-eye"></i></button>'); 
-		  	  	
+	
+	$card.append(zoomIn);		  	  	
 	$card.append(moveToPresent);
 	$card.append(discardToPast);
 	$card.append(showToEnemy);
@@ -324,12 +337,14 @@ function addButtonsForCardInHand($card){
 
 function addButtonsForCardInManeuver($card){
 	removeCardButtons($card);
+	let zoomIn = jQuery('<button class="btn megnez" title="Megnéz"><i class="fas fa-search-plus"></i></button>');
 	let rotateRight = jQuery('<button class="btn elforgat" title="Elforgat"><i class="fas fa-redo"></i></button>');
 	let rotateLeft = jQuery('<button class="btn visszaforgat" title="Visszaforgat"><i class="fas fa-undo"></i></button>'); 
 	let discardToPast = jQuery('<button class="btn multbatesz" title="Múltba tesz"><i class="fas fa-skull-crossbones"></i></button>');
 	let moveToPresent = jQuery('<button class="btn jelenbetesz" title="Jelenbe tesz"><i class="fas fa-shield-alt"></i></button>');	
 	let changePosition = jQuery('<button class="btn poziciotvalt" title="Pozíciót vált"><i class="fas fa-arrows-alt-v"></i></button>'); 
 	  	  	
+	$card.append(zoomIn);
 	$card.append(rotateRight);
 	$card.append(rotateLeft);
 	$card.append(discardToPast);
