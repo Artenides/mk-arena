@@ -53,87 +53,95 @@ var jatekosPakli = [
 
 function addButtonEventHandlers(){
 	
-	jQuery('body').on('click', '.elforgat', function () {
-    		var kartyaDiv = jQuery(this).closest('div');
-			if(!kartyaDiv.hasClass('piheno') && !kartyaDiv.hasClass('serult')){
-    			kartyaDiv.addClass('piheno');
-    		}
-    		else if(kartyaDiv.hasClass('piheno')){
-    			kartyaDiv.removeClass('piheno');
-    			kartyaDiv.addClass('serult');
-    		}
-        });
+	jQuery.contextMenu({
+        selector: '.menu-hand', 
+        trigger: 'left',
+        callback: function(key, options) {
+			let card = options.$trigger.closest('div');
+			actionHandler(key, card);
+        },
+        items:{
+            "megnez": {name: "Megnéz", icon: ""},
+            "jelenbe-tesz": {name: "Jelenbe tesz", icon: ""},
+            "multba-tesz": {name: "Múltba tesz", icon: ""},
+            "ellenfelnek-megmutat": {name: "Ellenfélnek megmutat", icon: ""},
+            "sep1": "---------",
+            "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+        }
+    });
 
-    	jQuery('body').on('click', '.visszaforgat', function () {
-    		let kartyaDiv = jQuery(this).closest('div');
-			if(kartyaDiv.hasClass('serult')){
-				kartyaDiv.removeClass('serult');
-    			kartyaDiv.addClass('piheno');
-    		}
-    		else if(kartyaDiv.hasClass('piheno')){
-    			kartyaDiv.removeClass('piheno');
-    		}
-        });
-
-    	jQuery('body').on('click', '.jelenbetesz', function () {
-    		let $cardDiv = jQuery(this).closest('div');
-			moveCardToPresent($cardDiv);
-        });
-
-    	jQuery('body').on('click', '.kezbevesz', function () {
-    		let $cardDiv = jQuery(this).closest('div');
-			moveCardToHand($cardDiv);
-        });
-
-    	jQuery('body').on('click', '.multbatesz', function () {
-    		let $cardDiv = jQuery(this).closest('div');
-			moveCardToPast($cardDiv);
-        });
-
-    	jQuery('body').on('click', '.manoverbekezd', function () {
-    		let $cardDiv = jQuery(this).closest('div');
-			moveCardToManeuverFront($cardDiv);
-        });
-
-    	jQuery('body').on('click', '.poziciotvalt', function () {
-    		let $card = jQuery(this).closest('div');
-			let $parent = $card.parent();
-			if($parent.attr('id')=="jatekosManoverFront"){
-				moveCardToManeuverBack($card);
-			}
-			else{
-				moveCardToManeuverFront($card);
-			}
-			
-			
-        });
-
-    	jQuery('body').on('click', '.ellenfelnekmegmutat', function () {
-    		let $card = jQuery(this).closest('div');
-			let cardId = $card.attr("id");
-			toggleCardVisibility(cardId);
-			printCardContainers();
-			
-        });
-
-		jQuery('body').on('click', '.megnez', function(){
-			let $card = jQuery(this).closest('div');
-			let bgImg = $card.css("background-image");
-			let $popup = jQuery('#popup');
-			$popup.find('.kartya').css("background-image", bgImg);
-			$popup.addClass("popup-open");
-			
-		});
-
-    	jQuery('body').on('click', '#jovoPakli', function () {
-			drawCardFromFuture();
-        });
+	jQuery.contextMenu({
+        selector: '.menu-present', 
+        trigger: 'left',
+        callback: function(key, options) {
+			let card = options.$trigger.closest('div');
+			actionHandler(key, card);
+        },
+        items:{
+            "megnez": {name: "Megnéz", icon: ""},
+			"fold1": {
+                "name": "Múltba/mélységbe tesz", 
+                "items": {
+                    "multba-tesz": {"name": "Múltba tesz"},
+                    "melysegbe-tesz": {"name": "Mélységbe tesz"}
+                }
+            },
+			"fold2": {
+                "name": "Elforgat", 
+                "items": {
+                    "eberbe-forgat": {"name": "Éberbe"},
+                    "pihenobe-forgat": {"name": "Pihenőbe"},
+					"serultbe-forgat": {"name": "Sérültbe"}
+                }
+            },
+            "manoverbe-kezd": {name: "Manőverbe kezd", icon: ""},
+            "sep1": "---------",
+            "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+        }
+    });
 
 
-		const interval = setInterval(function() {
+	jQuery.contextMenu({
+        selector: '.menu-maneuver', 
+        trigger: 'left',
+        callback: function(key, options) {
+			let card = options.$trigger.closest('div');
+			actionHandler(key, card);
+        },
+        items:{
+            "megnez": {name: "Megnéz", icon: ""},
+			"fold1": {
+                "name": "Múltba/mélységbe tesz", 
+                "items": {
+                    "multba-tesz": {"name": "Múltba tesz"},
+                    "melysegbe-tesz": {"name": "Mélységbe tesz"}
+                }
+            },
+			"fold2": {
+                "name": "Elforgat", 
+                "items": {
+                    "eberbe-forgat": {"name": "Éberbe"},
+                    "pihenobe-forgat": {"name": "Pihenőbe"},
+					"serultbe-forgat": {"name": "Sérültbe"}
+                }
+            },
+            "poziciot-valt": {name: "Pozíciót vált", icon: ""},
+			"jelenbe-tesz": {name: "Jelenbe tesz", icon: ""},
+            "sep1": "---------",
+            "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+        }
+    });
+	
+	
+    jQuery('body').on('click', '#jovoPakli', function () {
+		drawCardFromFuture();
+    });
+
+
+	const interval = setInterval(function() {
    		// method to be executed;
-			updateEnemyBoard();
- 		}, 5000);
+		updateEnemyBoard();
+ 	}, 5000);
 
 }
 
@@ -230,6 +238,64 @@ function drawCardFromFuture(){
 }
 
 
+
+function actionHandler(action, $card){
+	
+	if(action == "megnez"){
+		zoomOnCard($card);
+	}
+	else if(action == "jelenbe-tesz"){
+		moveCardToPresent($card);
+	}
+	else if(action == "eberbe-forgat"){
+		rotateCardToReady($card);
+	}
+	else if(action == "pihenobe-forgat"){
+		rotateCardToRest($card);
+	}	
+	else if(action == "serultbe-forgat"){
+		rotateCardToInjured($card);
+	}
+	else if(action == "multba-tesz"){
+		moveCardToPast($card);
+	}
+	else if(action == "ellenfelnek-megmutat"){
+		let cardId = $card.attr("id");
+		toggleCardVisibility(cardId);
+	}
+	else if(action == "manoverbe-kezd"){
+		moveCardToManeuverFront($card);
+	}
+	else if(action == "poziciot-valt"){
+		let $parent = $card.parent();
+		if($parent.attr('id')=="jatekosManoverFront"){
+			moveCardToManeuverBack($card);
+		}
+		else{
+			moveCardToManeuverFront($card);
+		}
+	}	
+}
+
+//CARD ACTION DEFINITIONS
+
+function rotateCardToReady($card){
+	if($card.hasClass('serult')) $card.removeClass('serult');
+	if($card.hasClass('piheno')) $card.removeClass('piheno');
+}
+
+function rotateCardToRest($card){
+	if($card.hasClass('serult')) $card.removeClass('serult');
+	if(!$card.hasClass('piheno')) $card.addClass('piheno');
+	
+}
+
+function rotateCardToInjured($card){
+	if($card.hasClass('piheno')) $card.removeClass('piheno');
+	if(!$card.hasClass('serult')) $card.addClass('serult');
+	
+}
+
 function moveCardToManeuverFront($card){
 	let cardId = $card.attr("id");
 	console.log("Moving card to maneuverFront: "+cardId);
@@ -270,7 +336,13 @@ function moveCardToPast($card){
 	$card.remove();
 }
 
-
+function zoomOnCard($card){
+	
+	let bgImg = $card.css("background-image");
+	let $popup = jQuery('#popup');
+	$popup.find('.kartya').css("background-image", bgImg);
+	$popup.addClass("popup-open");
+}
 
 
 
@@ -307,50 +379,20 @@ function removeCardButtons($card){
 
 function addButtonsForCardInPresent($card){
 	removeCardButtons($card);
-	let zoomIn = jQuery('<button class="btn megnez" title="Megnéz"><i class="fas fa-search-plus"></i></button>');
-	let rotateRight = jQuery('<button class="btn elforgat" title="Elforgat"><i class="fas fa-redo"></i></button>');
-	let rotateLeft = jQuery('<button class="btn visszaforgat" title="Visszaforgat"><i class="fas fa-undo"></i></button>'); 
-	let takeBackToHand = jQuery('<button class="btn kezbevesz" title="Kézbe visszavesz"><i class="fas fa-hand-paper"></i></button>');
-	let discardToPast = jQuery('<button class="btn multbatesz" title="Múltba tesz"><i class="fas fa-skull-crossbones"></i></button>');
-	let startManeuver = jQuery('<button class="btn manoverbekezd" title="Manőverbe kezd"><i class="fas fa-compass"></i></button>');
-
-	$card.append(zoomIn);	  	  	
-	$card.append(rotateRight);
-	$card.append(rotateLeft);
-	$card.append(takeBackToHand);
-	$card.append(discardToPast);
-	$card.append(startManeuver);
+	let menuButton = jQuery('<button class="btn menu-present" title="Menu"><i class="fas fa-scroll"></i></button>');
+	$card.append(menuButton);
 }
 
 function addButtonsForCardInHand($card){
 	removeCardButtons($card);
-	let zoomIn = jQuery('<button class="btn megnez" title="Megnéz"><i class="fas fa-search-plus"></i></button>');
-	let moveToPresent = jQuery('<button class="btn jelenbetesz" title="Jelenbe tesz"><i class="fas fa-shield-alt"></i></button>');	
-	let discardToPast = jQuery('<button class="btn multbatesz" title="Múltba tesz"><i class="fas fa-skull-crossbones"></i></button>');
-	let showToEnemy = jQuery('<button class="btn ellenfelnekmegmutat" title="Ellenfélnek megmutat"><i class="fas fa-eye"></i></button>'); 
-	
-	$card.append(zoomIn);		  	  	
-	$card.append(moveToPresent);
-	$card.append(discardToPast);
-	$card.append(showToEnemy);
+	let menuButton = jQuery('<button class="btn menu-hand" title="Menu"><i class="fas fa-scroll"></i></button>');
+	$card.append(menuButton);
 }
 
 function addButtonsForCardInManeuver($card){
 	removeCardButtons($card);
-	let zoomIn = jQuery('<button class="btn megnez" title="Megnéz"><i class="fas fa-search-plus"></i></button>');
-	let rotateRight = jQuery('<button class="btn elforgat" title="Elforgat"><i class="fas fa-redo"></i></button>');
-	let rotateLeft = jQuery('<button class="btn visszaforgat" title="Visszaforgat"><i class="fas fa-undo"></i></button>'); 
-	let discardToPast = jQuery('<button class="btn multbatesz" title="Múltba tesz"><i class="fas fa-skull-crossbones"></i></button>');
-	let moveToPresent = jQuery('<button class="btn jelenbetesz" title="Jelenbe tesz"><i class="fas fa-shield-alt"></i></button>');	
-	let changePosition = jQuery('<button class="btn poziciotvalt" title="Pozíciót vált"><i class="fas fa-arrows-alt-v"></i></button>'); 
-	  	  	
-	$card.append(zoomIn);
-	$card.append(rotateRight);
-	$card.append(rotateLeft);
-	$card.append(discardToPast);
-	$card.append(moveToPresent);
-	$card.append(changePosition);
-
+	let menuButton = jQuery('<button class="btn menu-maneuver" title="Menu"><i class="fas fa-scroll"></i></button>');
+	$card.append(menuButton);
 }
 
 
