@@ -133,9 +133,29 @@ function addButtonEventHandlers(){
     });
 	
 	
-    jQuery('body').on('click', '#jovoPakli', function () {
-		drawCardFromFuture();
+		jQuery.contextMenu({
+        selector: '.menu-future', 
+        trigger: 'left',
+        callback: function(key, options) {
+			let card = options.$trigger.closest('div');
+			actionHandler(key, card);
+        },
+        items:{
+			"fold1": {
+                "name": "Lapot húz", 
+                "items": {
+                    "jovobol-lapot-huz-1": {"name": "1 lapot"},
+                    "jovobol-lapot-huz-2": {"name": "2 lapot"}
+                }
+            },
+            "sep1": "---------",
+			"paklit-betolt": {name: "Paklit betölt", icon: ""},
+			"sep2": "---------",
+            "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+        }
     });
+	
+
 
 
 	const interval = setInterval(function() {
@@ -274,7 +294,16 @@ function actionHandler(action, $card){
 		else{
 			moveCardToManeuverFront($card);
 		}
-	}	
+	}
+	else if(action == "jovobol-lapot-huz-1"){
+		drawCardFromFuture();
+	}
+	else if(action == "jovobol-lapot-huz-2"){
+		drawCardFromFuture();
+		drawCardFromFuture();
+	}
+
+	
 }
 
 //CARD ACTION DEFINITIONS
@@ -394,5 +423,6 @@ function addButtonsForCardInManeuver($card){
 	let menuButton = jQuery('<button class="btn menu-maneuver" title="Menu"><i class="fas fa-scroll"></i></button>');
 	$card.append(menuButton);
 }
+
 
 
