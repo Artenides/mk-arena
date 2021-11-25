@@ -156,7 +156,9 @@ function addButtonEventHandlers(){
     });
 	
 
-
+    jQuery('body').on('click', '.popup-close-btn', function () {
+		popupCloseWithButton();
+    });  
 
 	const interval = setInterval(function() {
    		// method to be executed;
@@ -302,7 +304,9 @@ function actionHandler(action, $card){
 		drawCardFromFuture();
 		drawCardFromFuture();
 	}
-
+	else if(action == "paklit-betolt"){
+		loadDeck();
+	}
 	
 }
 
@@ -369,11 +373,34 @@ function zoomOnCard($card){
 	
 	let bgImg = $card.css("background-image");
 	let $popup = jQuery('#popup');
-	$popup.find('.kartya').css("background-image", bgImg);
+	$card = jQuery('<div class="kartya"></div>');
+	$card.css("background-image", bgImg);
+	$popup.append($card);
 	$popup.addClass("popup-open");
 }
 
+function loadDeck(){
+	let $popup = jQuery('#popup');
+	let $textArea = jQuery('<textarea/ id="deckTextArea">');
+	let $closeButton =  jQuery('<button class="btn popup-close-btn" title="Bezár"><i class="fas fa-window-close"></i></button>');
+	$popup.append($closeButton);
+	$popup.append($textArea);
+	$popup.addClass("popup-open");
+}
 
+function popupClose(){
+	let $popup = jQuery('#popup');
+	if($popup.find(".kartya").length > 0){ 
+		$popup.empty();
+		$popup.removeClass("popup-open");
+	}	
+}
+
+function popupCloseWithButton(){
+	let $popup = jQuery('#popup');
+	$popup.empty();
+	$popup.removeClass("popup-open");
+}
 
 function updateEnemyBoard(){
 	
