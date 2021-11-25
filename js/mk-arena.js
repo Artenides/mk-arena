@@ -102,7 +102,8 @@ function addButtonEventHandlers(){
                 "name": "Lapot húz", 
                 "items": {
                     "jovobol-lapot-huz-1": {"name": "1 lapot"},
-                    "jovobol-lapot-huz-2": {"name": "2 lapot"}
+                    "jovobol-lapot-huz-2": {"name": "2 lapot"},
+					"jovobol-lapot-huz-7": {"name": "7 lapot"}
                 }
             },
             "sep1": "---------",
@@ -215,17 +216,20 @@ function createEnemyCard(cardJson){
 }
 
 /**
-	Draws a card from the future deck and places it into the player's hand 
+	Draws cards from the future deck and places them into the player's hand 
  */
-function drawCardFromFuture(){
+function drawCardFromFuture(numOfCards){
 	if(jatekosJovo.length == 0) return;
-	let cardId = jatekosJovo.shift();
-	removeCardIdFromAll(cardId);
-	jatekosKez.push(cardId);
-	let cardJson = getCardDataById(cardId);
-	let $cardDiv = createCard(cardJson);
-	addButtonsForCardInHand($cardDiv);
-	jQuery('#jatekosKez').append($cardDiv);
+	if(jatekosJovo.length < numOfCards) numOfCards = jatekosJovo.length;
+	for(let i=0; i<numOfCards; i++){
+		let cardId = jatekosJovo.shift();
+		removeCardIdFromAll(cardId);
+		jatekosKez.push(cardId);
+		let cardJson = getCardDataById(cardId);
+		let $cardDiv = createCard(cardJson);
+		addButtonsForCardInHand($cardDiv);
+		jQuery('#jatekosKez').append($cardDiv);
+	}
 }
 
 function updateFutureCardCounter(){
@@ -271,11 +275,13 @@ function actionHandler(action, $card){
 		}
 	}
 	else if(action == "jovobol-lapot-huz-1"){
-		drawCardFromFuture();
+		drawCardFromFuture(1);
 	}
 	else if(action == "jovobol-lapot-huz-2"){
-		drawCardFromFuture();
-		drawCardFromFuture();
+		drawCardFromFuture(2);
+	}
+	else if(action == "jovobol-lapot-huz-7"){
+		drawCardFromFuture(7);
 	}
 	else if(action == "paklit-betolt"){
 		loadDeck();
