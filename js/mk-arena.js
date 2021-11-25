@@ -106,6 +106,7 @@ function addButtonEventHandlers(){
 					"jovobol-lapot-huz-7": {"name": "7 lapot"}
                 }
             },
+			"jovo-paklit-megkever": {name: "Jövő paklit megkever", icon: ""},
             "sep1": "---------",
 			"paklit-betolt": {name: "Paklit betölt", icon: ""},
 			"sep2": "---------",
@@ -230,6 +231,7 @@ function drawCardFromFuture(numOfCards){
 		addButtonsForCardInHand($cardDiv);
 		jQuery('#jatekosKez').append($cardDiv);
 	}
+	updateFutureCardCounter();
 }
 
 function updateFutureCardCounter(){
@@ -291,19 +293,16 @@ function actionHandler(action, $card){
 
 
 function shuffleFuture(){
-	shuffle(jatekosJovo); 
+	jatekosJovo = shuffle(jatekosJovo); 
 }
 
 function shuffle(arr) {
 	
-	for(let i = arr.length-1; i > 0; i--){
-  		const j = Math.floor(Math.random() * i);
-  		const temp = arr[i];
-  		arr[i] = arr[j];
-  		arr[j] = temp;
-	}
-	
-
+  let shuffled = arr
+  .map((value) => ({ value, sort: Math.random() }))
+  .sort((a, b) => a.sort - b.sort)
+  .map(({ value }) => value)
+	return shuffled;
 }
 
 //CARD ACTION DEFINITIONS
