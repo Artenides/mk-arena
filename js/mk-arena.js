@@ -5,6 +5,7 @@ var jatekosMult = [];
 var jatekosKez = [];
 var jatekosJovo = [];
 
+
 var jatekosPakli = [];
 
 
