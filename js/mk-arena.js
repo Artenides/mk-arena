@@ -5,51 +5,8 @@ var jatekosMult = [];
 var jatekosKez = [];
 var jatekosJovo = [];
 
-var jatekosPakli = [
-	{"id":"1", "cardimage":"cardimages/a_legio_buszkesege.png", "hidden":true},
-	{"id":"4", "cardimage":"cardimages/a_rendbira_aldasa.png", "hidden":true},
-	{"id":"5", "cardimage":"cardimages/a_transceps.png", "hidden":true},
-	{"id":"8", "cardimage":"cardimages/beke_honol.png", "hidden":true},
-	{"id":"9", "cardimage":"cardimages/csatabard_ele.png", "hidden":true},
-	{"id":"12", "cardimage":"cardimages/fullank.png", "hidden":true},
-	{"id":"13", "cardimage":"cardimages/fullank.png", "hidden":true},
-	{"id":"17", "cardimage":"cardimages/gyogyito_hivasa.png", "hidden":true},
-	{"id":"36", "cardimage":"cardimages/smaragdmagusok_kozbelepese.png", "hidden":true},
-	{"id":"18", "cardimage":"cardimages/haditanacs.png", "hidden":true},
-	{"id":"38", "cardimage":"cardimages/vadasz.png", "hidden":true},
-	{"id":"39", "cardimage":"cardimages/vadasz.png", "hidden":true},	
-	{"id":"19", "cardimage":"cardimages/haditanacs.png", "hidden":true},
-	{"id":"20", "cardimage":"cardimages/haditanacs.png", "hidden":true},
-	{"id":"21", "cardimage":"cardimages/kaosz_raddaq_kegyeltje.png", "hidden":true},	
-	{"id":"22", "cardimage":"cardimages/kaosz_raddaq_kegyeltje.png", "hidden":true},
-	{"id":"23", "cardimage":"cardimages/kaosz_raddaq_kegyeltje.png", "hidden":true},		
-	{"id":"24", "cardimage":"cardimages/kenyszeru_szovetseg.png", "hidden":true},	
-	{"id":"25", "cardimage":"cardimages/kenyszeru_szovetseg.png", "hidden":true},	
-	{"id":"26", "cardimage":"cardimages/kenyszeru_szovetseg.png", "hidden":true},
-	{"id":"27", "cardimage":"cardimages/ovo_szellemek_joindulata.png", "hidden":true},
-	{"id":"28", "cardimage":"cardimages/ovo_szellemek_joindulata.png", "hidden":true},
-	{"id":"29", "cardimage":"cardimages/ovo_szellemek_joindulata.png", "hidden":true},
-	{"id":"30", "cardimage":"cardimages/piszkos_csel.png", "hidden":true},
-	{"id":"31", "cardimage":"cardimages/piszkos_csel.png", "hidden":true},
-	{"id":"32", "cardimage":"cardimages/piszkos_csel.png", "hidden":true},
-	{"id":"33", "cardimage":"cardimages/pusztito_orjonges.png", "hidden":true},
-	{"id":"34", "cardimage":"cardimages/pusztito_orjonges.png", "hidden":true},
-	{"id":"35", "cardimage":"cardimages/pusztito_orjonges.png", "hidden":true},
+var jatekosPakli = [];
 
-	{"id":"37", "cardimage":"cardimages/smaragdmagusok_kozbelepese.png", "hidden":true},
-
-	{"id":"40", "cardimage":"cardimages/vadasz.png", "hidden":true},
-	{"id":"6", "cardimage":"cardimages/a_transceps.png", "hidden":true},
-	{"id":"7", "cardimage":"cardimages/a_transceps.png", "hidden":true},
-	{"id":"2", "cardimage":"cardimages/a_legio_buszkesege.png", "hidden":true},
-	{"id":"3", "cardimage":"cardimages/a_legio_buszkesege.png", "hidden":true},
-	{"id":"10", "cardimage":"cardimages/csatabard_ele.png", "hidden":true},
-	{"id":"11", "cardimage":"cardimages/csatabard_ele.png", "hidden":true},
-	{"id":"14", "cardimage":"cardimages/fullank.png", "hidden":true},
-	{"id":"15", "cardimage":"cardimages/gyogyito_hivasa.png", "hidden":true},
-	{"id":"16", "cardimage":"cardimages/gyogyito_hivasa.png", "hidden":true},
-		
-];
 
 function addButtonEventHandlers(){
 	
@@ -160,18 +117,29 @@ function addButtonEventHandlers(){
 		popupCloseWithButton();
     });  
 
+    jQuery('body').on('click', '.popup-load-btn', function () {
+		fetchDeck();
+    });
+/*
 	const interval = setInterval(function() {
    		// method to be executed;
 		updateEnemyBoard();
  	}, 5000);
-
+*/
 }
 
 
 function initFuture(){
+	
+	jatekosJelen = [];
+	jatekosMult = [];
+	jatekosKez = [];
+	jatekosJovo = [];
 	for (let i = 0; i < jatekosPakli.length; i++) { 
 		jatekosJovo.push(jatekosPakli[i].id);
 	}
+	removeAllCardsFromTable();
+	updateFutureCardCounter();
 }
 
 function getCardDataById(cardId){
@@ -228,7 +196,7 @@ function createCard(cardJson){
 	let cardDiv = jQuery("<div/>");
 	cardDiv.addClass("kartya");
 	cardDiv.attr("id",cardJson.id);
-	cardDiv.css("background-image", "url(https://lapkereso.spacebar.hu/" + cardJson.cardimage + ")");
+	cardDiv.css("background-image", "url(https://lapkereso.spacebar.hu" + cardJson.cardimage + ")");
 	return cardDiv;
 }
 
@@ -240,7 +208,7 @@ function createEnemyCard(cardJson){
 		cardDiv.css("background-image", "url(cardimages/back.png)");
 	}
 	else{
-		cardDiv.css("background-image", "url(https://lapkereso.spacebar.hu/" + cardJson.cardimage + ")");
+		cardDiv.css("background-image", "url(https://lapkereso.spacebar.hu" + cardJson.cardimage + ")");
 	}
 	return cardDiv;
 }
@@ -259,7 +227,11 @@ function drawCardFromFuture(){
 	jQuery('#jatekosKez').append($cardDiv);
 }
 
-
+function updateFutureCardCounter(){
+	let futureCardCounter = jQuery("#futureCardCounter"); 
+	futureCardCounter.empty();
+	futureCardCounter.append(jatekosJovo.length);
+}
 
 function actionHandler(action, $card){
 	
@@ -311,6 +283,17 @@ function actionHandler(action, $card){
 }
 
 //CARD ACTION DEFINITIONS
+
+function removeAllCardsFromTable(){
+	
+	jQuery("#jatekosKez").empty();
+	jQuery("#jatekosJelen").empty();
+	jQuery("#jatekosMult").empty();
+	jQuery("#jatekosKez").empty();
+	jQuery("#jatekosManoverFront").empty();
+	jQuery("#jatekosManoverVedett").empty();
+	
+}
 
 function rotateCardToReady($card){
 	if($card.hasClass('serult')) $card.removeClass('serult');
@@ -383,8 +366,10 @@ function loadDeck(){
 	let $popup = jQuery('#popup');
 	let $textArea = jQuery('<textarea/ id="deckTextArea">');
 	let $closeButton =  jQuery('<button class="btn popup-close-btn" title="Bezár"><i class="fas fa-window-close"></i></button>');
+	let $loadButton = jQuery('<button class="btn popup-load-btn" title="Bezár"><i class="fas fa-check"></i></button>');
 	$popup.append($closeButton);
 	$popup.append($textArea);
+	$popup.append($loadButton);
 	$popup.addClass("popup-open");
 }
 
@@ -452,4 +437,41 @@ function addButtonsForCardInManeuver($card){
 }
 
 
+function getCardNamesFromTextArea(){
+	return $("#deckTextArea").val().split('\n');
+}
 
+
+
+function fetchDeck(){
+	let data = getCardNamesFromTextArea();
+	if(data.length>0){
+		getCardsFromApi(data);
+	}		
+}
+
+
+function getCardsFromApi(data){
+	
+	var jqxhr = jQuery.ajax({
+		url : "http://rpgthings.com/mk-arena-server/ws/api.php",
+		type : "post",
+		data : {
+			action : "load-deck",
+			data : data
+		}
+	}).done(function(data) {
+		if (data.errorCode == 0) {
+			console.log(data.data);
+			jatekosPakli = data.data;
+			initFuture();
+		}
+		else {
+			console.log("Hiba: "+data.message);
+		}
+	}).fail(function() {
+		console.log("Fail Hiba: "+data.message);
+	});
+	
+	
+}
