@@ -140,6 +140,7 @@ function initFuture(){
 	}
 	removeAllCardsFromTable();
 	updateFutureCardCounter();
+	shuffleFuture();
 }
 
 function getCardDataById(cardId){
@@ -280,6 +281,23 @@ function actionHandler(action, $card){
 		loadDeck();
 	}
 	
+}
+
+
+function shuffleFuture(){
+	shuffle(jatekosJovo); 
+}
+
+function shuffle(arr) {
+	
+	for(let i = arr.length-1; i > 0; i--){
+  		const j = Math.floor(Math.random() * i);
+  		const temp = arr[i];
+  		arr[i] = arr[j];
+  		arr[j] = temp;
+	}
+	
+
 }
 
 //CARD ACTION DEFINITIONS
@@ -465,6 +483,7 @@ function getCardsFromApi(data){
 			console.log(data.data);
 			jatekosPakli = data.data;
 			initFuture();
+			popupCloseWithButton();
 		}
 		else {
 			console.log("Hiba: "+data.message);
