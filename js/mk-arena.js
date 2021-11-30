@@ -25,6 +25,15 @@ function addButtonEventHandlers(){
             "multba-tesz": {name: "Múltba tesz", icon: ""},
             "ellenfelnek-megmutat": {name: "Ellenfélnek megmutat", icon: ""},
             "sep1": "---------",
+            "fold1": {
+                  "name": "Kezet érintő akciók",
+                  "items": {
+                           "kez-multba-tesz": {"name": "Összes lapot múltba tesz"},
+                           "kez-melysegbe-tesz": {"name": "Összes lapot mélységbe tesz"},
+                           "kez-ellenfelnek-megmutat": {"name": "Összes lapot ellenfélnek megmutat"}
+                  }
+            },
+            "sep2": "---------",
             "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
         }
     });
@@ -42,6 +51,15 @@ function addButtonEventHandlers(){
             "multba-tesz": {name: "Múltba tesz", icon: ""},
             "ellenfelnek-megmutat": {name: "Ellenfélnek megmutat", icon: ""},
             "sep1": "---------",
+            "fold1": {
+                  "name": "Kezet érintő akciók",
+                  "items": {
+                           "kez-multba-tesz": {"name": "Összes lapot múltba tesz"},
+                           "kez-melysegbe-tesz": {"name": "Összes lapot mélységbe tesz"},
+                           "kez-ellenfelnek-megmutat": {"name": "Összes lapot ellenfélnek megmutat"}
+                  }
+            },
+            "sep2": "---------",
             "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
         }
     });
@@ -88,6 +106,7 @@ function addButtonEventHandlers(){
                 }
             },
             "manoverbe-kezd": {name: "Manőverbe kezd", icon: ""},
+            "kezbe-visszavesz": {name: "Kézbe visszavesz", icon: ""},
             "sep1": "---------",
             "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
         }
@@ -174,8 +193,9 @@ function initFuture(){
 	jatekosMult = [];
 	jatekosKez = [];
 	jatekosJovo = [];
+	jatekosTorony = [];
 	for (let i = 0; i < jatekosPakli.length; i++) { 
-		jatekosJovo.push(jatekosPakli[i].id);
+		jatekosJovo.push(parseInt(jatekosPakli[i].id));
 	}
 	removeAllCardsFromTable();
 	updateFutureCardCounter();
@@ -237,8 +257,9 @@ function removeCardIdFromAll(cardId){
 function printCardContainers(){
 	console.log("Jövő ("+jatekosJovo.length+"): "+jatekosJovo);
 	console.log("Kéz: "+jatekosKez);
-	//console.log("Jelen: "+jatekosJelen);
-	//console.log("Múlt: "+jatekosMult);
+	console.log("Jelen: "+jatekosJelen);
+	console.log("Múlt: "+jatekosMult);
+	console.log("Torony: "+jatekosTorony);
 	//console.log("Pakli: "+JSON.stringify(jatekosPakli[0]));
 }
 
@@ -321,6 +342,9 @@ function actionHandler(action, $card){
 			moveCardToManeuverFront($card);
 		}
 	}
+	else if(action == "kezbe-visszavesz"){
+	    moveCardToHand($card);
+	}
 	else if(action == "jovobol-lapot-huz-1"){
 		drawCardFromFuture(1);
 	}
@@ -339,7 +363,9 @@ function actionHandler(action, $card){
 	else if(action == "tornyokat-kikeres"){
 	    drawTowersFromFuture();
 	}
-	
+
+
+	printCardContainers();
 }
 
 
@@ -363,9 +389,9 @@ function removeAllCardsFromTable(){
 	jQuery("#jatekosKez").empty();
 	jQuery("#jatekosJelen").empty();
 	jQuery("#jatekosMult").empty();
-	jQuery("#jatekosKez").empty();
 	jQuery("#jatekosManoverFront").empty();
 	jQuery("#jatekosManoverVedett").empty();
+	jQuery("#jatekosTorony").empty();
 	
 }
 
@@ -388,14 +414,12 @@ function rotateCardToInjured($card){
 
 function moveCardToManeuverFront($card){
 	let cardId = $card.attr("id");
-	console.log("Moving card to maneuverFront: "+cardId);
 	addButtonsForCardInManeuver($card);
 	$card.detach().appendTo('#jatekosManoverFront');
 }
 
 function moveCardToManeuverBack($card){
 	let cardId = $card.attr("id");
-	console.log("Moving card to maneuverBack: "+cardId);
 	addButtonsForCardInManeuver($card);
 	$card.detach().appendTo('#jatekosManoverVedett');
 }
@@ -405,7 +429,7 @@ function moveCardToPresent($card){
 	let cardJson = getCardDataById(cardId);
 	cardJson.hidden = false;
 	removeCardIdFromAll(cardId);
-	jatekosJelen.push(cardId);
+	jatekosJelen.push(parseInt(cardId));
 	addButtonsForCardInPresent($card);
 	$card.detach().appendTo('#jatekosJelen');
 }
@@ -414,7 +438,7 @@ function moveCardToPresent($card){
 function moveCardToHand($card){
 	let cardId = $card.attr("id");
 	removeCardIdFromAll(cardId);
-	jatekosKez.push(cardId);
+	jatekosKez.push(parseInt(cardId));
 	addButtonsForCardInHand($card);
 	$card.detach().appendTo('#jatekosKez');
 }
@@ -422,7 +446,7 @@ function moveCardToHand($card){
 function moveCardToPast($card){
 	let cardId = $card.attr("id");
 	removeCardIdFromAll(cardId);
-	jatekosMult.push(cardId);
+	jatekosMult.push(parseInt(cardId));
 	$card.remove();
 }
 
@@ -441,7 +465,7 @@ function buildTower($card){
 	let cardJson = getCardDataById(cardId);
 	cardJson.hidden = false;
 	removeCardIdFromAll(cardId);
-	jatekosTorony.push(cardId);
+	jatekosTorony.push(parseInt(cardId));
 	addButtonsForCardInTower($card);
 	$card.detach().appendTo('#jatekosTorony');
 
@@ -457,7 +481,6 @@ function drawTowersFromFuture(){
    	    }
    	}
     updateFutureCardCounter();
-    printCardContainers();
 }
 
 
@@ -507,8 +530,7 @@ function updateEnemyBoard(){
 		let $cardDiv = createEnemyCard(cardJson);
 		jQuery('#ellenfelJelen').append($cardDiv);
 	}
-	printCardContainers();
-	
+
 }
 
 
@@ -525,7 +547,6 @@ function addButtonsForCardInPresent($card){
 
 function addButtonsForCardInHand($card){
 	removeCardButtons($card);
-	console.log($card);
 	let menuButton;
 	 if($card.attr("card-type") == "Toronyszint"){
 	    menuButton = jQuery('<button class="btn menu-hand-tower" title="Menu"><i class="fas fa-scroll"></i></button>');
