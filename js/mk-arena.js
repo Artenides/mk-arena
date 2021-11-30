@@ -4,6 +4,7 @@ var jatekosJelen = [];
 var jatekosMult = [];
 var jatekosKez = [];
 var jatekosJovo = [];
+var jatekosTorony = [];
 
 
 var jatekosPakli = [];
@@ -27,6 +28,40 @@ function addButtonEventHandlers(){
             "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
         }
     });
+
+	jQuery.contextMenu({
+        selector: '.menu-hand-tower',
+        trigger: 'left',
+        callback: function(key, options) {
+			let card = options.$trigger.closest('div');
+			actionHandler(key, card);
+        },
+        items:{
+            "megnez": {name: "Megnéz", icon: ""},
+            "tornyot-bovit": {name: "Tornyot bővít", icon: ""},
+            "multba-tesz": {name: "Múltba tesz", icon: ""},
+            "ellenfelnek-megmutat": {name: "Ellenfélnek megmutat", icon: ""},
+            "sep1": "---------",
+            "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+        }
+    });
+
+	jQuery.contextMenu({
+        selector: '.menu-tower',
+        trigger: 'left',
+        callback: function(key, options) {
+			let card = options.$trigger.closest('div');
+			actionHandler(key, card);
+        },
+        items:{
+            "megnez": {name: "Megnéz", icon: ""},
+            "multba-tesz": {name: "Múltba tesz", icon: ""},
+            "ellenfelnek-megmutat": {name: "Ellenfélnek megmutat", icon: ""},
+            "sep1": "---------",
+            "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+        }
+    });
+
 
 	jQuery.contextMenu({
         selector: '.menu-present', 
@@ -110,6 +145,7 @@ function addButtonEventHandlers(){
 			"jovo-paklit-megkever": {name: "Jövő paklit megkever", icon: ""},
             "sep1": "---------",
 			"paklit-betolt": {name: "Paklit betölt", icon: ""},
+			"tornyokat-kikeres": {name: "Toronyszinteket kikeres", icon: ""},
 			"sep2": "---------",
             "quit": {name: "Kilép", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
         }
@@ -165,33 +201,43 @@ function toggleCardVisibility(cardId){
 
 
 function removeCardIdFromAll(cardId){
-	
-	let index = jatekosJelen.indexOf(cardId);
+    let cardID = parseInt(cardId);
+	let index = jatekosJelen.indexOf(cardID);
 	if (index > -1) {
   		jatekosJelen.splice(index, 1);
+  		return;
 	}
 
-	index = jatekosJovo.indexOf(cardId);
+	index = jatekosJovo.indexOf(cardID);
 	if (index > -1) {
   		jatekosJovo.splice(index, 1);
+        return;
 	}
 	
-	index = jatekosKez.indexOf(cardId);
+	index = jatekosKez.indexOf(cardID);
 	if (index > -1) {
   		jatekosKez.splice(index, 1);
+  		return;
 	}
-	
-	index = jatekosMult.indexOf(cardId);
+
+	index = jatekosTorony.indexOf(cardID);
+    if (index > -1) {
+    	jatekosTorony.splice(index, 1);
+    	return;
+    }
+
+	index = jatekosMult.indexOf(cardID);
 	if (index > -1) {
   		jatekosMult.splice(index, 1);
+  		return;
 	}
 }
 
 
 function printCardContainers(){
-	//console.log("Jövő: "+jatekosJovo);
+	console.log("Jövő ("+jatekosJovo.length+"): "+jatekosJovo);
 	console.log("Kéz: "+jatekosKez);
-	console.log("Jelen: "+jatekosJelen);
+	//console.log("Jelen: "+jatekosJelen);
 	//console.log("Múlt: "+jatekosMult);
 	//console.log("Pakli: "+JSON.stringify(jatekosPakli[0]));
 }
@@ -201,6 +247,7 @@ function createCard(cardJson){
 	cardDiv.addClass("kartya");
 	cardDiv.attr("id",cardJson.id);
 	cardDiv.css("background-image", "url(https://lapkereso.spacebar.hu" + cardJson.cardimage + ")");
+	cardDiv.attr("card-type", cardJson.card_type);
 	return cardDiv;
 }
 
@@ -225,12 +272,9 @@ function drawCardFromFuture(numOfCards){
 	if(jatekosJovo.length < numOfCards) numOfCards = jatekosJovo.length;
 	for(let i=0; i<numOfCards; i++){
 		let cardId = jatekosJovo.shift();
-		removeCardIdFromAll(cardId);
-		jatekosKez.push(cardId);
 		let cardJson = getCardDataById(cardId);
-		let $cardDiv = createCard(cardJson);
-		addButtonsForCardInHand($cardDiv);
-		jQuery('#jatekosKez').append($cardDiv);
+        let $card = createCard(cardJson);
+		moveCardToHand($card);
 	}
 	updateFutureCardCounter();
 }
@@ -288,6 +332,12 @@ function actionHandler(action, $card){
 	}
 	else if(action == "paklit-betolt"){
 		loadDeck();
+	}
+	else if(action == "tornyot-bovit"){
+        buildTower($card);
+	}
+	else if(action == "tornyokat-kikeres"){
+	    drawTowersFromFuture();
 	}
 	
 }
@@ -386,6 +436,31 @@ function zoomOnCard($card){
 	$popup.addClass("popup-open");
 }
 
+function buildTower($card){
+    let cardId = $card.attr("id");
+	let cardJson = getCardDataById(cardId);
+	cardJson.hidden = false;
+	removeCardIdFromAll(cardId);
+	jatekosTorony.push(cardId);
+	addButtonsForCardInTower($card);
+	$card.detach().appendTo('#jatekosTorony');
+
+}
+
+function drawTowersFromFuture(){
+
+   	for(let i=0; i<jatekosPakli.length; i++){
+   	    let cardJson = jatekosPakli[i];
+   	    if(cardJson['card_type'] == "Toronyszint"){
+            let $card = createCard(cardJson);
+       		moveCardToHand($card);
+   	    }
+   	}
+    updateFutureCardCounter();
+    printCardContainers();
+}
+
+
 function loadDeck(){
 	let $popup = jQuery('#popup');
 	let $textArea = jQuery('<textarea/ id="deckTextArea">');
@@ -450,13 +525,26 @@ function addButtonsForCardInPresent($card){
 
 function addButtonsForCardInHand($card){
 	removeCardButtons($card);
-	let menuButton = jQuery('<button class="btn menu-hand" title="Menu"><i class="fas fa-scroll"></i></button>');
+	console.log($card);
+	let menuButton;
+	 if($card.attr("card-type") == "Toronyszint"){
+	    menuButton = jQuery('<button class="btn menu-hand-tower" title="Menu"><i class="fas fa-scroll"></i></button>');
+	 }
+	 else{
+	    menuButton = jQuery('<button class="btn menu-hand" title="Menu"><i class="fas fa-scroll"></i></button>');
+	 }
 	$card.append(menuButton);
 }
 
 function addButtonsForCardInManeuver($card){
 	removeCardButtons($card);
 	let menuButton = jQuery('<button class="btn menu-maneuver" title="Menu"><i class="fas fa-scroll"></i></button>');
+	$card.append(menuButton);
+}
+
+function addButtonsForCardInTower($card){
+	removeCardButtons($card);
+	let menuButton = jQuery('<button class="btn menu-tower" title="Menu"><i class="fas fa-scroll"></i></button>');
 	$card.append(menuButton);
 }
 
